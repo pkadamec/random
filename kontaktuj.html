@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kontaktuj.cz — telefonní seznam</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root{
+  --bg:#EEF1EA;
+  --surface:#FFFFFF;
+  --ink:#23291F;
+  --primary:#2F4F3E;
+  --primary-soft:#3F6450;
+  --accent:#D9A441;
+  --line:#CBD3C2;
+  --muted:#6B7566;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:48px 20px 80px;
+}
+
+.wrap{
+  width:100%;
+  max-width:760px;
+}
+
+header{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:36px;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.wordmark{
+  font-family:'Fraunces',serif;
+  font-weight:700;
+  font-size:32px;
+  letter-spacing:-0.01em;
+  color:var(--primary);
+}
+.wordmark span{color:var(--accent);}
+
+.tagline{
+  font-size:13px;
+  color:var(--muted);
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+.search-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:28px;
+  box-shadow:0 1px 2px rgba(35,41,31,0.04);
+}
+
+.search-row{
+  display:flex;
+  gap:10px;
+}
+
+#q{
+  flex:1;
+  font-family:'Inter',sans-serif;
+  font-size:17px;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#FBFCFA;
+  color:var(--ink);
+  outline:none;
+  transition:border-color .15s ease;
+}
+#q:focus{border-color:var(--primary-soft);}
+#q::placeholder{color:#9AA293;}
+
+.search-btn{
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:15px;
+  padding:0 22px;
+  border:none;
+  border-radius:10px;
+  background:var(--primary);
+  color:#fff;
+  cursor:pointer;
+  transition:background .15s ease;
+}
+.search-btn:hover{background:var(--primary-soft);}
+
+.body-area{
+  display:flex;
+  gap:18px;
+  margin-top:18px;
+}
+
+.alpha-rail{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  padding-top:2px;
+}
+.letter{
+  width:30px;
+  height:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:#AFB8A4;
+  border-radius:6px;
+  cursor:pointer;
+  user-select:none;
+  transition:all .12s ease;
+}
+.letter:hover{color:var(--primary);background:#E4E9DC;}
+.letter.has-data{color:var(--primary-soft);font-weight:500;}
+.letter.active{background:var(--accent);color:#fff;}
+
+.results{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  min-height:140px;
+}
+
+.result-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:16px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  opacity:0;
+  transform:translateY(6px);
+  animation:rise .28s ease forwards;
+}
+@keyframes rise{to{opacity:1;transform:translateY(0);}}
+
+.who{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.idx{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--muted);
+  width:26px;
+}
+.name{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:18px;
+}
+.number{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:15px;
+  color:var(--primary-soft);
+}
+.call-link{
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  color:var(--primary);
+  text-decoration:none;
+  border:1px solid var(--primary);
+  border-radius:8px;
+  padding:7px 13px;
+  white-space:nowrap;
+  transition:background .12s ease,color .12s ease;
+}
+.call-link:hover{background:var(--primary);color:#fff;}
+
+.empty{
+  font-family:'Inter',sans-serif;
+  color:var(--muted);
+  font-size:14.5px;
+  padding:30px 4px;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  text-align:center;
+}
+
+.hint{
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  color:var(--muted);
+  text-align:center;
+  margin-top:28px;
+}
+
+footer{
+  margin-top:50px;
+  font-size:12px;
+  color:#AFB8A4;
+  text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="wordmark">kontaktuj<span>.cz</span></div>
+    <div class="tagline">telefonní seznam</div>
+  </header>
+
+  <div class="search-card">
+    <div class="search-row">
+      <input id="q" type="text" placeholder="Jméno, příjmení nebo číslo…" autocomplete="off">
+      <button class="search-btn" onclick="render()">Hledat</button>
+    </div>
+  </div>
+
+  <div class="body-area">
+    <div class="alpha-rail" id="rail"></div>
+    <div class="results" id="results"></div>
+  </div>
+
+  <div class="hint">Zkus zadat „Vorlíček“ nebo jen číslici.</div>
+
+  <footer>kontaktuj.cz — ukázkový seznam pro scénku, není to skutečná databáze.</footer>
+</div>
+
+<script>
+const contacts = [
+  { name: "Václav Vorlíček", number: "776 206 298" },
+  { name: "Zdeněk Vorlíček", number: "721 445 566" },
+  { name: "Daniel Vorlíček", number: "720 730 224" }
+];
+
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const dataLetters = new Set(contacts.map(c => c.name.normalize("NFD").replace(/[\u0300-\u036f]/g,"")[0].toUpperCase()));
+let activeLetter = null;
+
+function buildRail(){
+  const rail = document.getElementById("rail");
+  rail.innerHTML = "";
+  alphabet.forEach(letter => {
+    const el = document.createElement("div");
+    el.className = "letter" + (dataLetters.has(letter) ? " has-data" : "");
+    el.textContent = letter;
+    el.onclick = () => {
+      activeLetter = (activeLetter === letter) ? null : letter;
+      document.getElementById("q").value = "";
+      render();
+    };
+    el.id = "letter-" + letter;
+    rail.appendChild(el);
+  });
+}
+
+function strip(s){
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+}
+
+function render(){
+  const query = strip(document.getElementById("q").value.trim());
+  const resultsEl = document.getElementById("results");
+
+  document.querySelectorAll(".letter").forEach(el => el.classList.remove("active"));
+  if (activeLetter) {
+    const el = document.getElementById("letter-" + activeLetter);
+    if (el) el.classList.add("active");
+  }
+
+  let matches = contacts.filter(c => {
+    const nameMatch = query ? strip(c.name).includes(query) || c.number.replace(/\s/g,"").includes(query.replace(/\s/g,"")) : true;
+    const letterMatch = activeLetter ? strip(c.name)[0].toUpperCase() === activeLetter : true;
+    return nameMatch && letterMatch;
+  });
+
+  if (!query && !activeLetter) matches = [];
+
+  resultsEl.innerHTML = "";
+
+  if ((query || activeLetter) && matches.length === 0) {
+    resultsEl.innerHTML = '<div class="empty">Žádná shoda. Zkuste jiné jméno nebo číslo.</div>';
+    return;
+  }
+
+  if (!query && !activeLetter) {
+    resultsEl.innerHTML = '<div class="empty">Zadejte jméno nebo vyberte písmeno vlevo.</div>';
+    return;
+  }
+
+  matches.forEach((c, i) => {
+    const card = document.createElement("div");
+    card.className = "result-card";
+    card.style.animationDelay = (i * 0.05) + "s";
+    card.innerHTML = `
+      <div class="who">
+        <div class="idx">${String(i+1).padStart(3,"0")}</div>
+        <div>
+          <div class="name">${c.name}</div>
+          <div class="number">${c.number}</div>
+        </div>
+      </div>
+      <a class="call-link" href="tel:${c.number.replace(/\s/g,"")}">Volat</a>
+    `;
+    resultsEl.appendChild(card);
+  });
+}
+
+document.getElementById("q").addEventListener("input", render);
+document.getElementById("q").addEventListener("keydown", e => { if(e.key === "Enter") render(); });
+
+buildRail();
+render();
+</script>
+
+</body>
+</html>
